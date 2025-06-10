@@ -1,5 +1,5 @@
-print "jinseungun ii dowajuda"
-# 🐍 syasyasyak - Socratic Scaffolding 챗봇
+"jinseungun ii dowajuda"
+# 🐍 ProjectBoA - Socratic Scaffolding 챗봇
 
 **syasyasyak**는 소크라틱 질문법과 스캐폴딩 원칙을 기반으로 설계된 교육용 대화형 챗봇입니다.  
 학습자의 비판적 사고와 메타인지를 촉진하며 논거-반론-자기 점검 시퀀스를 통해 사고력을 강화합니다.
