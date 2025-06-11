@@ -5,12 +5,13 @@ import random
 import os
 from dotenv import load_dotenv
 
+# 환경변수 로드 (로컬에서는 .env / Streamlit Cloud에서는 Secrets 사용 가능)
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # System prompt 설계
 SYSTEM_PROMPT = """
-너는 학습자의 비판적 사고 촉진을 돕는 Socratic Scaffolding 챗봇이야.
+너는 학습자의 비판적 사고 촉진을 돕는 Socratic Scaffolding 챗봇 'BoA'야.
 목표는 학습자가 자신의 주장과 논리를 점검하고 개선하도록 돕는 거야.
 대답은 항상 질문 형태로 이어져야 하고, 반론과 자기 점검 질문을 포함해.
 정답을 직접 제시하지 말고 Socratic 방식으로 사고를 유도해.
@@ -18,16 +19,19 @@ SYSTEM_PROMPT = """
 
 # GPT API 호출 함수
 def call_gpt(user_input):
-    messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": user_input}
-    ]
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=messages,
-        temperature=0.7
-    )
-    return response['choices'][0]['message']['content']
+    try:
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_input}
+        ]
+        response = openai.ChatCompletion.create(
+		model="gpt-3.5-turbo",
+		messages=messages,
+		temperature=0.7
+		)
+        return response['choices'][0]['message']['content']
+    except Exception as e:
+        return f"⚠️ 오류 발생: {e}"
 
 # Streamlit 앱
 st.title("🐍 BoA: Socratic Scaffolding 챗봇")
@@ -45,9 +49,9 @@ user_question = st.text_input("질문 입력:", placeholder=starter_choice)
 
 # 대화 시작
 if st.button("대화 시작하기") and user_question:
-    with st.spinner("syasyasyak이 사고를 유도하는 중..."):
+    with st.spinner("BoA가 사고를 유도하는 중..."):
         response = call_gpt(user_question)
-    st.write("🗣️ **syasyasyak:**")
+    st.write("🗣️ **BoA:**")
     st.write(response)
 
     # 간단한 대화 로그 (세션 state 이용)
@@ -60,4 +64,4 @@ if 'chat_log' in st.session_state:
     st.subheader("📝 대화 기록")
     for entry in st.session_state.chat_log:
         st.write(f"**너:** {entry['user']}")
-        st.write(f"**syasyasyak:** {entry['bot']}")
+        st.write(f"**BoA:** {entry['bot']}")
