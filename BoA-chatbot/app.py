@@ -24,12 +24,12 @@ def call_gpt(user_input):
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_input}
         ]
-        response = openai.ChatCompletion.create(
+        response = openai.Chat.Completion.create(
 		model="gpt-3.5-turbo",
 		messages=messages,
 		temperature=0.7
 		)
-        return response['choices'][0]['message']['content']
+        return response.choices[0].message.content
     except Exception as e:
         return f"⚠️ 오류 발생: {e}"
 
