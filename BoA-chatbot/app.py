@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 genai.configure(api_key=os.getenv("GENAI_API_KEY"))
 
-# 모델 초기화
+# 모델 초기화 (무료 버전: gemini-1.0-pro 사용)
 model = genai.GenerativeModel('gemini-1.0-pro')
 
 # System prompt 설계
@@ -22,7 +22,7 @@ SYSTEM_PROMPT = """
 
 # genai API 호출 함수 → BoA용 변경
 def call_genai(user_input):
-        try:
+    try:
         full_prompt = f"{SYSTEM_PROMPT}\n\n사용자 질문: {user_input}\n\nBoA의 응답:"
         
         response = model.generate_content([full_prompt])
