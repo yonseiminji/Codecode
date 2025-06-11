@@ -22,11 +22,16 @@ SYSTEM_PROMPT = """
 
 # genai API 호출 함수 → BoA용 변경
 def call_genai(user_input):
-    try:
+        try:
         full_prompt = f"{SYSTEM_PROMPT}\n\n사용자 질문: {user_input}\n\nBoA의 응답:"
         
-        response = model.generate_content(full_prompt)
-        return response.text
+        response = model.generate_content([full_prompt])
+        
+        # 최신 라이브러리에서는 .text 사용 가능, fallback 추가
+        if hasattr(response, 'text'):
+            return response.text
+        else:
+            return response.candidates[0].content.parts[0].text
     except Exception as e:
         return f"⚠️ 오류 발생: {e}"
 
