@@ -1,13 +1,16 @@
 # app.py
 import streamlit as st
-import openai
+import google.generativeai as genai
 import random
 import os
 from dotenv import load_dotenv
 
 # 환경변수 로드 (로컬에서는 .env / Streamlit Cloud에서는 Secrets 사용 가능)
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+
+# 모델 초기화
+model = genai.GenerativeModel('gemini-pro')
 
 # System prompt 설계
 SYSTEM_PROMPT = """
@@ -17,22 +20,13 @@ SYSTEM_PROMPT = """
 정답을 직접 제시하지 말고 Socratic 방식으로 사고를 유도해.
 """
 
-# GPT API 호출 함수
-def call_gpt(user_input):
+# genai API 호출 함수 → BoA용 변경
+def call_genai(user_input):
     try:
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_input}
-        ]
-        response = openai.chat.completions.create(
-		model="gpt-3.5-turbo",
-		    messages=[
-     			   {"role": "system", "content": SYSTEM_PROMPT},
-     			   {"role": "user", "content": user_input}
-   		 ],
-   		 temperature=0.7
-		)
-        return response.choices[0].message.content
+        full_prompt = f"{SYSTEM_PROMPT}\n\n사용자 질문: {user_input}\n\nBoA의 응답:"
+        
+        response = model.generate_content(full_prompt)
+        return response.text
     except Exception as e:
         return f"⚠️ 오류 발생: {e}"
 
@@ -53,7 +47,7 @@ user_question = st.text_input("질문 입력:", placeholder=starter_choice)
 # 대화 시작
 if st.button("대화 시작하기") and user_question:
     with st.spinner("BoA가 사고를 유도하는 중..."):
-        response = call_gpt(user_question)
+        response = call_genai(user_question)
     st.write("🗣️ **BoA:**")
     st.write(response)
 
