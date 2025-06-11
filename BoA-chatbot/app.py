@@ -11,6 +11,7 @@ genai.configure(api_key=os.getenv("GENAI_API_KEY"))
 
 # 모델 초기화 (무료 버전: gemini-1.0-pro 사용)
 model = genai.GenerativeModel('gemini-1.0-pro')
+chat = model.start_chat()
 
 # System prompt 설계
 SYSTEM_PROMPT = """
@@ -25,7 +26,8 @@ def call_genai(user_input):
     try:
         full_prompt = f"{SYSTEM_PROMPT}\n\n사용자 질문: {user_input}\n\nBoA의 응답:"
         
-        response = model.generate_content([full_prompt])
+        response = chat.send_message(f"{SYSTEM_PROMPT}\n\n{user_input}")
+        return response.text
         
         # 최신 라이브러리에서는 .text 사용 가능, fallback 추가
         if hasattr(response, 'text'):
