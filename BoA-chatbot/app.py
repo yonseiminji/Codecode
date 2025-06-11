@@ -10,7 +10,7 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GENAI_API_KEY"))
 
 # 모델 초기화
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.0-pro')
 
 # System prompt 설계
 SYSTEM_PROMPT = """
